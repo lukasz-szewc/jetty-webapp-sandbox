@@ -1,6 +1,8 @@
 package org.luksze;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,12 @@ public class Application {
     }
 
     private void start() throws Exception {
-        Server server = new Server(startPort);
+        QueuedThreadPool pool = new QueuedThreadPool(4, 1);
+        pool.setName("http-worker");
+        Server server = new Server(pool);
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(startPort);
+        server.addConnector(connector);
         server.setHandler(constructWebAppContext());
         server.start();
         LOGGER.info("Jetty server started");
