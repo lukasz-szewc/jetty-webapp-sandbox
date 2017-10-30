@@ -57,11 +57,41 @@ public class Application {
 
     private WebAppContext constructWebAppContext() throws URISyntaxException {
         WebAppContext root = new WebAppContext();
+        String webDir = webDir().toURI().toString();
+        LOGGER.info("Web dir {}", webDir);
+        String resourceBase = webDirStringRepresentation(webDir);
+        String descriptor = resourceBase + "/WEB-INF/web.xml";
         root.setContextPath("/");
-        root.setDescriptor(WEBAPP_RESOURCES_LOCATION + "/WEB-INF/web.xml");
-        root.setResourceBase(webDir().toURI().toString());
+        root.setDescriptor(descriptor);
+        root.setResourceBase(resourceBase);
         root.setParentLoaderPriority(true);
+        LOGGER.info("Descriptor: {}, resource base: {}", descriptor, resourceBase);
         return root;
+    }
+
+    private String webDirStringRepresentation(String webDir) throws URISyntaxException {
+        int i = nrOfExclamationMarkInside(webDir);
+        LOGGER.info("Nr of exclamation sign {}", i);
+        if (i == 2) {
+            return withoutLastExclamationMark(webDir);
+        }
+        return webDir;
+    }
+
+    private String withoutLastExclamationMark(String webDir) {
+        int i = webDir.lastIndexOf('!');
+        return webDir.substring(0, i) + webDir.substring(i + 1);
+    }
+
+    static int nrOfExclamationMarkInside(String webDir) {
+        int value = 0;
+        String worker = webDir;
+        int position;
+        while ((position = worker.indexOf('!')) != -1) {
+            worker = worker.substring(position + 1);
+            value++;
+        }
+        return value;
     }
 
     private URL webDir() {
