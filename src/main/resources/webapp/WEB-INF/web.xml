@@ -8,10 +8,19 @@
         <servlet-name>HelloWorldServlet</servlet-name>
         <servlet-class>org.luksze.HelloWorldServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GaussianServlet</servlet-name>
+        <servlet-class>org.luksze.GaussianServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>HelloWorldServlet</servlet-name>
         <url-pattern>/HelloWorld</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>GaussianServlet</servlet-name>
+        <url-pattern>/gauss</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
