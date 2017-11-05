@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class GaussianServlet extends HttpServlet {
 
-    private final Random random = new Random();
+    private static final Random random = new Random();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         serveIt(request, response);
@@ -20,6 +20,11 @@ public class GaussianServlet extends HttpServlet {
     }
 
     private void serveIt(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long round = computation();
+        response.getWriter().print(round);
+    }
+
+    static long computation() {
         double v = random.nextGaussian() * 100 + 1000;
         long round = Math.round(v);
         try {
@@ -27,6 +32,6 @@ public class GaussianServlet extends HttpServlet {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        response.getWriter().print(round);
+        return round;
     }
 }
