@@ -40,7 +40,7 @@ public class Application {
     }
 
     private void start() throws Exception {
-        QueuedThreadPool pool = new QueuedThreadPool(6, 1);
+        QueuedThreadPool pool = new QueuedThreadPool(4, 1);
         pool.setName("http-worker");
         Server server = new Server(pool);
         ServerConnector connector = new ServerConnector(server);
