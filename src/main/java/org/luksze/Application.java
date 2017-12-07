@@ -2,6 +2,8 @@ package org.luksze;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.component.AbstractLifeCycle;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
@@ -21,8 +23,9 @@ public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
     private final int startPort;
     private final int stopPort;
+    private Server server;
 
-    private Application() {
+    Application() {
         this(DEFAULT_PORT_START, DEFAULT_PORT_STOP);
     }
 
@@ -39,7 +42,23 @@ public class Application {
         }
     }
 
+    public void stop() throws Exception {
+        if (server != null) {
+            server.stop();
+        }
+    }
+
+    public void startWithoutBlocking() throws Exception {
+        startIt();
+    }
+
     private void start() throws Exception {
+        Server server = startIt();
+        server.join();
+        LOGGER.info("Jetty server exited");
+    }
+
+    private Server startIt() throws Exception {
         QueuedThreadPool pool = new QueuedThreadPool(6, 1);
         pool.setName("http-worker");
         Server server = new Server(pool);
@@ -51,8 +70,7 @@ public class Application {
         LOGGER.info("Jetty server started");
         LOGGER.debug("Jetty web server port: {}", startPort);
         LOGGER.debug("Port to stop Jetty with the 'stop' operation: {}", stopPort);
-        server.join();
-        LOGGER.info("Jetty server exited");
+        return server;
     }
 
     private WebAppContext constructWebAppContext() throws URISyntaxException {
@@ -102,5 +120,4 @@ public class Application {
         }
         return webAppDir;
     }
-
 }
