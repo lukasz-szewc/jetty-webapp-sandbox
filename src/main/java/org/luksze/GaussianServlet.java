@@ -1,5 +1,7 @@
 package org.luksze;
 
+import com.codahale.metrics.MetricRegistry;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,9 @@ public class GaussianServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Object attribute = request.getServletContext().getAttribute(WholeAppListener.METRIC_REGISTRY);
+        MetricRegistry metricRegistry = (MetricRegistry) attribute;
+        metricRegistry.meter("gaussMeter").mark();
         serveIt(request, response);
     }
 
