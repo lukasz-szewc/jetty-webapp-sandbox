@@ -1,6 +1,8 @@
 package org.luksze;
 
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +23,10 @@ public class GaussianServlet extends HttpServlet {
         Object attribute = request.getServletContext().getAttribute(WholeAppListener.METRIC_REGISTRY);
         MetricRegistry metricRegistry = (MetricRegistry) attribute;
         metricRegistry.meter("gaussMeter").mark();
+        Timer gaussTimer = metricRegistry.timer("gaussTimer");
+        Context context = gaussTimer.time();
         serveIt(request, response);
+        context.stop();
     }
 
     private void serveIt(HttpServletRequest request, HttpServletResponse response) throws IOException {
