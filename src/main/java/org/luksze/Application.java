@@ -57,7 +57,7 @@ public class Application {
     }
 
     private Server startIt() throws Exception {
-        QueuedThreadPool pool = new QueuedThreadPool(6, 1);
+        QueuedThreadPool pool = new QueuedThreadPool(106, 1);
         pool.setName("http-worker");
         Server server = new Server(pool);
         ServerConnector connector = new ServerConnector(server);
