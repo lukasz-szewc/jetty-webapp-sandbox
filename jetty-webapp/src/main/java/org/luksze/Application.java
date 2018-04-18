@@ -18,18 +18,21 @@ public class Application {
     private static final String WEBAPP_RESOURCES_LOCATION = "webapp";
     private static final int DEFAULT_PORT_STOP = 8090;
     private static final int DEFAULT_PORT_START = 8080;
+    private static final int DEFAULT_WORKER_THREADS = 106;
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
     private final int startPort;
     private final int stopPort;
+    private final int maxThreads;
     private Server server;
 
     Application() {
-        this(DEFAULT_PORT_START, DEFAULT_PORT_STOP);
+        this(DEFAULT_PORT_START, DEFAULT_WORKER_THREADS);
     }
 
-    private Application(int startPort, int stopPort) {
+    private Application(int startPort, int workerThreads) {
         this.startPort = startPort;
-        this.stopPort = stopPort;
+        this.maxThreads = workerThreads;
+        this.stopPort = DEFAULT_PORT_STOP;
     }
 
     public static void main(String[] args) throws Exception {
@@ -57,7 +60,7 @@ public class Application {
     }
 
     private Server startIt() throws Exception {
-        QueuedThreadPool pool = new QueuedThreadPool(106, 1);
+        QueuedThreadPool pool = new QueuedThreadPool(maxThreads, 1);
         pool.setName("http-worker");
         Server server = new Server(pool);
         ServerConnector connector = new ServerConnector(server);
